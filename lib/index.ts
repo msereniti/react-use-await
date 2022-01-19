@@ -9,15 +9,45 @@ type PromiseCache<Result = unknown, Error = unknown> = {
   promise?: Promise<Result>;
 };
 
-const promiseCaches: PromiseCache[] = [];
+type Required<T> = T extends object
+  ? { [P in keyof T]-?: NonNullable<T[P]> }
+  : T;
+type Comparer = (a: any, b: any) => boolean;
+
+type CacheOptions = {
+  lifetime?: number;
+  maxSize?: number;
+  isEqual?: Comparer;
+};
+type CacheLegacyOptions = number;
+type CacheOptionsArg = CacheOptions | CacheLegacyOptions;
+
+const defaultOptions: CacheOptions = {
+  lifetime: Infinity,
+  maxSize: 1000,
+  isEqual: deepEqual,
+};
+
+const promisesCaches = new Map<() => Promise<any>, PromiseCache[]>();
 
 const usePromise = <Result extends any, Args extends any[], Error = unknown>(
   promise: (...inputs: Args) => Promise<Result>,
   inputs?: Args,
-  lifespan: number = Infinity
+  cacheOptions: CacheOptionsArg = defaultOptions
 ): Result => {
-  for (const promiseCache of promiseCaches) {
-    if (deepEqual(inputs, promiseCache.inputs)) {
+  const options = (
+    typeof cacheOptions === 'number'
+      ? { ...defaultOptions, lifetime: cacheOptions }
+      : { ...defaultOptions, ...cacheOptions }
+  ) as Required<CacheOptions>;
+
+  if (!promisesCaches.has(promise)) {
+    promisesCaches.set(promise, []);
+  }
+  const caches = promisesCaches.get(promise)!;
+
+  for (const promiseCache of caches) {
+    if (options.isEqual(inputs, promiseCache.inputs)) {
       if (promiseCache.rejected) {
         throw promiseCache.error;
       }
@@ -46,21 +76,29 @@ const usePromise = <Result extends any, Args extends any[], Error = unknown>(
         promiseCache.rejected = true;
       })
       .then(() => {
-        if (lifespan > 0 && Number.isFinite(lifespan)) {
+        if (options.lifetime > 0 && Number.isFinite(options.lifetime)) {
           setTimeout(() => {
-            const index = promiseCaches.indexOf(promiseCache);
+            const index = caches.indexOf(promiseCache);
 
             if (index !== -1) {
-              promiseCaches.splice(index, 1);
+              caches.splice(index, 1);
             }
-          }, lifespan);
+          }, options.lifetime);
         }
 
         return promiseCache.result;
       }),
   };
 
-  promiseCaches.push(promiseCache);
+  caches.push(promiseCache);
+  if (caches.length === options.maxSize + 1) {
+    caches.shift();
+  } else if (caches.length > options.maxSize) {
+    caches.reverse();
+    caches.length = options.maxSize;
+    caches.reverse();
+  }
+
   throw promiseCache.promise;
 };
 

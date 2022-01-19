@@ -11,19 +11,19 @@ const noop: (...args: any[]) => void = () => {
   /* do nothing */
 };
 
-test('clear cache after lifespan', async () => {
+test("shift cache if it's over the maxSize", async () => {
   let loadTriggeredCount = 0;
-  let triggerComponentRerender = noop;
+  let triggerNewRequest = noop;
   const loadData = (...args: any[]) =>
     new Promise((resolve) => {
       loadTriggeredCount++;
       resolve('data');
     });
   const Component: React.FC = () => {
-    const data = usePromise(loadData, ['cacheLifespan'], 100);
-    const [, setCounter] = useState(0);
+    const [counter, setCounter] = useState(0);
+    const data = usePromise(loadData, [counter], { maxSize: 3 });
 
-    triggerComponentRerender = () => setCounter((x) => x + 1);
+    triggerNewRequest = () => setCounter((x) => x + 1);
 
     return <div>{data}</div>;
   };
@@ -38,10 +38,13 @@ test('clear cache after lifespan', async () => {
   mountApp(app);
 
   assert.equal(loadTriggeredCount, 1);
-  triggerComponentRerender();
+  triggerNewRequest();
   assert.equal(loadTriggeredCount, 1);
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  triggerComponentRerender();
+  triggerNewRequest();
+  assert.equal(loadTriggeredCount, 1);
+  await new Promise((resolve) => setTimeout(resolve, 100));
+  assert.equal(loadTriggeredCount, 1);
+  triggerNewRequest();
   assert.equal(loadTriggeredCount, 2);
 });
 

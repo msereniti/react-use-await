@@ -11,7 +11,7 @@ const noop: (...args: any[]) => void = () => {
   /* do nothing */
 };
 
-test('clear cache after lifespan', async () => {
+test('uses custom isEqual', async () => {
   let loadTriggeredCount = 0;
   let triggerComponentRerender = noop;
   const loadData = (...args: any[]) =>
@@ -20,7 +20,7 @@ test('clear cache after lifespan', async () => {
       resolve('data');
     });
   const Component: React.FC = () => {
-    const data = usePromise(loadData, ['cacheLifespan'], 100);
+    const data = usePromise(loadData, [Math.random()], { isEqual: () => true });
     const [, setCounter] = useState(0);
 
     triggerComponentRerender = () => setCounter((x) => x + 1);
@@ -39,10 +39,8 @@ test('clear cache after lifespan', async () => {
 
   assert.equal(loadTriggeredCount, 1);
   triggerComponentRerender();
-  assert.equal(loadTriggeredCount, 1);
   await new Promise((resolve) => setTimeout(resolve, 200));
-  triggerComponentRerender();
-  assert.equal(loadTriggeredCount, 2);
+  assert.equal(loadTriggeredCount, 1);
 });
 
 test.run();
