@@ -13,7 +13,11 @@ Inspired by [fetch-suspense](https://github.com/CharlesStover/fetch-suspense), b
 
 ## Install
 
-* `npm install react-promise-suspense --save`
+```yarn
+yarn add react-promise-suspense
+# or using npm
+npm install react-promise-suspense --save
+```
 
 ## Example
 
