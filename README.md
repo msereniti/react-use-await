@@ -2,6 +2,8 @@
 
 React hook for resolving promises with Suspense support.
 
+Fork of [vigzmv's react-promise-suspense](https://github.com/vigzmv/react-promise-suspense) that is not longer under development.
+
 Inspired by [fetch-suspense](https://github.com/CharlesStover/fetch-suspense), but this one is not limited to fetch, `usePromise` works with any Promise.
 
 [![version](https://img.shields.io/npm/v/react-promise-suspense.svg)](https://www.npmjs.com/package/react-promise-suspense)
