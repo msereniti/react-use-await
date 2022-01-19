@@ -129,10 +129,6 @@ const usePromiseHook: UsePromiseHook = <
   throw promiseCache.promise;
 };
 
-const usePromise = usePromiseHook as UsePromise;
-
-usePromise.maxCachedPromisesCount = defaultMaxCachedPromisesCount;
-
 /**
  * @description hook-like function that triggers closes parent React.Suspense to
  * render `fallback` instead of `children` until Promise from provided `getPromise`
@@ -149,4 +145,8 @@ usePromise.maxCachedPromisesCount = defaultMaxCachedPromisesCount;
  *
  * @returns result of fulfilled promise from `getPromise` call.
  */
-export default usePromise as UsePromise;
+const usePromise = usePromiseHook as UsePromise;
+
+usePromise.maxCachedPromisesCount = defaultMaxCachedPromisesCount;
+
+export = usePromise;
