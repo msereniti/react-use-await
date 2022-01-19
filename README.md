@@ -17,13 +17,16 @@ Inspired by [fetch-suspense](https://github.com/CharlesStover/fetch-suspense), b
 
 ## Example
 
-- Here's an [Codesandbox example](https://codesandbox.io/s/react-promise-suspense-example-t14mh) of a setTimeout delayed component. 
+Awaiting a fetch promise:
 
-- Awaiting a fetch promise:
 ```js
 import usePromise from 'react-promise-suspense';
 
-const fetchJson = input => fetch(input).then(res => res.json());
+const fetchJson = async (url, params) => {
+  const response = await fetch(input);
+
+  return await response.json();
+};
 
 const MyFetchingComponent = () => {
   // usePromise(Promise, [inputs,],)
@@ -37,9 +40,9 @@ const MyFetchingComponent = () => {
 
 const App = () => {
   return (
-    <Suspense fallback="Loading...">
+    <React.Suspense fallback="Loading...">
       <MyFetchingComponent />
-    </Suspense>
+    </React.Suspense>
   );
 };
 ```
