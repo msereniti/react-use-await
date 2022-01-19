@@ -27,7 +27,7 @@
     "build": "tsc --outDir dist",
     "lint": "eslint ./lib/**/*.ts",
     "dev": "tsc --outDir dist --watch",
-    "prepack": "yarn build",
+    "prepack": "yarn lint && yarn test && yarn build",
     "test": "uvu -r tsm ./tests",
     "test.watch": "yarn test; watchlist ./lib ./tests -- yarn test"
   },

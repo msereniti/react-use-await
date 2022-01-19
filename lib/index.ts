@@ -3,8 +3,10 @@ import deepEqual from 'fast-deep-equal';
 type PromiseCache = {
   promise?: Promise<void>;
   inputs: Array<any>;
-  error?: any;
+  error?: unknown;
   response?: any;
+  resolved: boolean;
+  rejected: boolean;
 };
 
 const promiseCaches: PromiseCache[] = [];
@@ -16,13 +18,11 @@ const usePromise = <Result extends any, Args extends any[]>(
 ): Result => {
   for (const promiseCache of promiseCaches) {
     if (deepEqual(inputs, promiseCache.inputs)) {
-      // If an error occurred,
-      if (Object.prototype.hasOwnProperty.call(promiseCache, 'error')) {
+      if (promiseCache.rejected) {
         throw promiseCache.error;
       }
 
-      // If a response was successful,
-      if (Object.prototype.hasOwnProperty.call(promiseCache, 'response')) {
+      if (promiseCache.resolved) {
         return promiseCache.response;
       }
       throw promiseCache.promise;
@@ -31,14 +31,18 @@ const usePromise = <Result extends any, Args extends any[]>(
 
   // The request is new or has changed.
   const promiseCache: PromiseCache = {
+    resolved: false,
+    rejected: false,
     promise:
       // Make the promise request.
       promise(...inputs)
         .then((response: any) => {
           promiseCache.response = response;
+          promiseCache.resolved = true;
         })
-        .catch((e: any) => {
-          promiseCache.error = e;
+        .catch((error: unknown) => {
+          promiseCache.error = error;
+          promiseCache.rejected = true;
         })
         .then(() => {
           if (lifespan > 0) {
