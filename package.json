@@ -42,6 +42,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "esm": "^3.2.25",
+    "husky": "^7.0.4",
     "jsdom": "^19.0.0",
     "prettier": "^2.5.1",
     "react": "^17.0.2",
