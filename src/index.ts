@@ -1,7 +1,7 @@
 import { dequal } from 'dequal';
 
 type PromiseCache<Result = unknown, Error = unknown> = {
-  inputs?: Array<any>;
+  getPromiseArgs?: Array<any>;
   error?: Error;
   result?: any;
   resolved: boolean;
@@ -19,12 +19,13 @@ type CacheOptions = {
   maxSize?: number;
   isEqual?: Comparer;
 };
+/** @deprecated cache argument as a number is deprecated, use `{ lifetime: number }` object instead  */
 type CacheLegacyOptions = number;
 type CacheOptionsArg = CacheOptions | CacheLegacyOptions;
 
 type UsePromiseHook = <Result extends any, Args extends any[], Error = unknown>(
-  promise: (...inputs: Args) => Promise<Result>,
-  inputs?: Args,
+  promise: (...getPromiseArgs: Args) => Promise<Result>,
+  getPromiseArgs?: Args,
   cacheOptions?: CacheOptionsArg
 ) => Result;
 type UsePromise = UsePromiseHook & {
@@ -45,8 +46,8 @@ const usePromiseHook: UsePromiseHook = <
   Args extends any[],
   Error = unknown
 >(
-  promise: (...inputs: Args) => Promise<Result>,
-  inputs?: Args,
+  getPromise: (...getPromiseArgs: Args) => Promise<Result>,
+  getPromiseArgs?: Args,
   cacheOptions: CacheOptionsArg = defaultOptions
 ): Result => {
   const options: Required<CacheOptions> =
@@ -54,8 +55,8 @@ const usePromiseHook: UsePromiseHook = <
       ? { ...defaultOptions, lifetime: cacheOptions }
       : { ...defaultOptions, ...cacheOptions };
 
-  if (!promisesCaches.has(promise)) {
-    promisesCaches.set(promise, []);
+  if (!promisesCaches.has(getPromise)) {
+    promisesCaches.set(getPromise, []);
   }
   if (promisesCaches.size > usePromise.maxCachedPromisesCount) {
     const cacheOverflow =
@@ -66,10 +67,10 @@ const usePromiseHook: UsePromiseHook = <
       promisesCaches.delete(toDelete.pop()!);
     }
   }
-  const caches = promisesCaches.get(promise)!;
+  const caches = promisesCaches.get(getPromise)!;
 
   for (const promiseCache of caches) {
-    if (options.isEqual(inputs, promiseCache.inputs)) {
+    if (options.isEqual(getPromiseArgs, promiseCache.getPromiseArgs)) {
       if (promiseCache.rejected) {
         throw promiseCache.error;
       }
@@ -85,8 +86,8 @@ const usePromiseHook: UsePromiseHook = <
   const promiseCache: PromiseCache<Result, Error> = {
     resolved: false,
     rejected: false,
-    inputs,
-    promise: promise(...(inputs || ([] as unknown as Args)))
+    getPromiseArgs,
+    promise: getPromise(...(getPromiseArgs || ([] as unknown as Args)))
       .then((result: Result) => {
         promiseCache.result = result;
         promiseCache.resolved = true;
@@ -128,4 +129,20 @@ const usePromise = usePromiseHook as UsePromise;
 
 usePromise.maxCachedPromisesCount = defaultMaxCachedPromisesCount;
 
+/**
+ * @description hook-like function that triggers closes parent React.Suspense to
+ * render `fallback` instead of `children` until Promise from provided `getPromise`
+ * is not resolved or rejected.
+ *
+ * @param getPromise – function that returns promise (like a `fetch`).
+ * Note: `usePromise` will call it using `getPromiseArgs` parameter, don't call it by yourself!
+ *
+ * @param getPromiseArgs – arguments, that will be spread into `getPromise` call.
+ * Don't pass it or pass empty array/`undefined` to call `getPromise` without arguments.
+ *
+ * @param cacheOptions – options to control cache of promises call
+ * @type `{ lifetime?: number; maxSize?: number; isEqual?: Comparer; }`
+ *
+ * @returns result of fulfilled promise from `getPromise` call.
+ */
 export default usePromise as UsePromise;
