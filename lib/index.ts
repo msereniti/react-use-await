@@ -1,17 +1,17 @@
 import deepEqual from 'fast-deep-equal';
 
-type PromiseCache = {
-  promise?: Promise<void>;
+type PromiseCache<Result = unknown, Error = unknown> = {
   inputs?: Array<any>;
-  error?: unknown;
-  response?: any;
+  error?: Error;
+  result?: any;
   resolved: boolean;
   rejected: boolean;
+  promise?: Promise<Result>;
 };
 
 const promiseCaches: PromiseCache[] = [];
 
-const usePromise = <Result extends any, Args extends any[]>(
+const usePromise = <Result extends any, Args extends any[], Error = unknown>(
   promise: (...inputs: Args) => Promise<Result>,
   inputs?: Args,
   lifespan: number = 0
@@ -23,23 +23,25 @@ const usePromise = <Result extends any, Args extends any[]>(
       }
 
       if (promiseCache.resolved) {
-        return promiseCache.response;
+        return promiseCache.result;
       }
       throw promiseCache.promise;
     }
   }
 
   // The request is new or has changed.
-  const promiseCache: PromiseCache = {
+  const promiseCache: PromiseCache<Result, Error> = {
     resolved: false,
     rejected: false,
     inputs,
     promise: promise(...(inputs || ([] as unknown as Args)))
-      .then((response: any) => {
-        promiseCache.response = response;
+      .then((result: Result) => {
+        promiseCache.result = result;
         promiseCache.resolved = true;
+
+        return result;
       })
-      .catch((error: unknown) => {
+      .catch((error: Error) => {
         promiseCache.error = error;
         promiseCache.rejected = true;
       })
@@ -53,6 +55,8 @@ const usePromise = <Result extends any, Args extends any[]>(
             }
           }, lifespan);
         }
+
+        return promiseCache.result;
       }),
   };
 
