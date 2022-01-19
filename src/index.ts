@@ -1,4 +1,4 @@
-import deepEqual from 'fast-deep-equal';
+import { dequal } from 'dequal';
 
 type PromiseCache<Result = unknown, Error = unknown> = {
   inputs?: Array<any>;
@@ -31,10 +31,10 @@ type UsePromise = UsePromiseHook & {
   maxCachedPromisesCount: number;
 };
 
-const defaultOptions: CacheOptions = {
+const defaultOptions: Required<CacheOptions> = {
   lifetime: Infinity,
   maxSize: 1000,
-  isEqual: deepEqual,
+  isEqual: dequal,
 };
 const defaultMaxCachedPromisesCount = 1000;
 
@@ -49,11 +49,10 @@ const usePromiseHook: UsePromiseHook = <
   inputs?: Args,
   cacheOptions: CacheOptionsArg = defaultOptions
 ): Result => {
-  const options = (
+  const options: Required<CacheOptions> =
     typeof cacheOptions === 'number'
       ? { ...defaultOptions, lifetime: cacheOptions }
-      : { ...defaultOptions, ...cacheOptions }
-  ) as Required<CacheOptions>;
+      : { ...defaultOptions, ...cacheOptions };
 
   if (!promisesCaches.has(promise)) {
     promisesCaches.set(promise, []);
