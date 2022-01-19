@@ -2,7 +2,7 @@
   "compilerOptions": {
     "declaration": true,
     "downlevelIteration": true,
-    "lib": [ "dom", "es5", "es2015.promise", "scripthost" ],
+    "lib": [ "dom", "ESNext" ],
     "module": "commonjs",
     "moduleResolution": "Node",
     "noFallthroughCasesInSwitch": true,
@@ -19,5 +19,5 @@
     "target": "es5",
     "esModuleInterop": true
   },
-  "files": [ "lib/index.ts" ]
+  "files": [ "src/index.ts" ]
 }

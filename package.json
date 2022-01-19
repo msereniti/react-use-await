@@ -25,11 +25,11 @@
   "homepage": "https://github.com/phytonmk/react-promise-suspense#readme",
   "scripts": {
     "build": "tsc --outDir dist",
-    "lint": "eslint ./lib/**/*.ts",
+    "lint": "eslint ./src/**/*.ts",
     "dev": "tsc --outDir dist --watch",
     "prepack": "yarn lint && yarn test && yarn build",
     "test": "uvu -r tsm ./tests",
-    "test.watch": "yarn test; watchlist ./lib ./tests -- yarn test"
+    "test.watch": "yarn test; watchlist ./src ./tests -- yarn test"
   },
   "devDependencies": {
     "@types/node": "^17.0.10",

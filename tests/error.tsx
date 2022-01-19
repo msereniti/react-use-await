@@ -3,7 +3,7 @@ import { useErrorBoundary } from 'use-error-boundary';
 import { test } from 'uvu';
 import assert from 'uvu/assert';
 
-import usePromise from '../lib';
+import usePromise from '../src';
 import { mountApp, setup } from './setup';
 
 test.before(setup);
