@@ -22,15 +22,29 @@ type CacheOptions = {
 type CacheLegacyOptions = number;
 type CacheOptionsArg = CacheOptions | CacheLegacyOptions;
 
+type UsePromiseHook = <Result extends any, Args extends any[], Error = unknown>(
+  promise: (...inputs: Args) => Promise<Result>,
+  inputs?: Args,
+  cacheOptions?: CacheOptionsArg
+) => Result;
+type UsePromise = UsePromiseHook & {
+  maxCachedPromisesCount: number;
+};
+
 const defaultOptions: CacheOptions = {
   lifetime: Infinity,
   maxSize: 1000,
   isEqual: deepEqual,
 };
+const defaultMaxCachedPromisesCount = 1000;
 
 const promisesCaches = new Map<() => Promise<any>, PromiseCache[]>();
 
-const usePromise = <Result extends any, Args extends any[], Error = unknown>(
+const usePromiseHook: UsePromiseHook = <
+  Result extends any,
+  Args extends any[],
+  Error = unknown
+>(
   promise: (...inputs: Args) => Promise<Result>,
   inputs?: Args,
   cacheOptions: CacheOptionsArg = defaultOptions
@@ -43,6 +57,15 @@ const usePromise = <Result extends any, Args extends any[], Error = unknown>(
 
   if (!promisesCaches.has(promise)) {
     promisesCaches.set(promise, []);
+  }
+  if (promisesCaches.size > usePromise.maxCachedPromisesCount) {
+    const cacheOverflow =
+      promisesCaches.size - usePromise.maxCachedPromisesCount;
+    const toDelete = [...promisesCaches.keys()].slice(0, cacheOverflow);
+
+    while (toDelete.length > 0) {
+      promisesCaches.delete(toDelete.pop()!);
+    }
   }
   const caches = promisesCaches.get(promise)!;
 
@@ -102,4 +125,8 @@ const usePromise = <Result extends any, Args extends any[], Error = unknown>(
   throw promiseCache.promise;
 };
 
-export default usePromise;
+const usePromise = usePromiseHook as UsePromise;
+
+usePromise.maxCachedPromisesCount = defaultMaxCachedPromisesCount;
+
+export default usePromise as UsePromise;
