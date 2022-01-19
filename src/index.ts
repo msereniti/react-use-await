@@ -23,7 +23,11 @@ type CacheOptions = {
 type CacheLegacyOptions = number;
 type CacheOptionsArg = CacheOptions | CacheLegacyOptions;
 
-type UsePromiseHook = <Result extends any, Args extends any[], Error = unknown>(
+type UsePromiseHook = <
+  Result extends any,
+  Args extends any[],
+  _Error = unknown
+>(
   promise: (...getPromiseArgs: Args) => Promise<Result>,
   getPromiseArgs?: Args,
   cacheOptions?: CacheOptionsArg
