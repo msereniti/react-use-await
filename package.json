@@ -25,12 +25,21 @@
   "homepage": "https://github.com/phytonmk/react-promise-suspense#readme",
   "scripts": {
     "build": "tsc --outDir build",
+    "lint": "eslint ./lib/**/*.ts",
     "dev": "tsc --outDir build --watch",
     "prepublishOnly": "npm run build",
     "test": "exit 0"
   },
   "devDependencies": {
     "@types/node": "^17.0.10",
+    "@typescript-eslint/parser": "^5.10.0",
+    "eslint": "^8.7.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-no-cyrillic-string": "^1.0.5",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "prettier": "^2.5.1",
     "typescript": "^4.5.4"
   },
   "dependencies": {

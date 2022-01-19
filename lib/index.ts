@@ -9,7 +9,11 @@ interface PromiseCache {
 
 const promiseCaches: PromiseCache[] = [];
 
-const usePromise = <Result extends any, Args extends any[]>(promise: (...inputs: Args) => Promise<Result>, inputs: Args, lifespan: number = 0): Result => {
+const usePromise = <Result extends any, Args extends any[]>(
+  promise: (...inputs: Args) => Promise<Result>,
+  inputs: Args,
+  lifespan: number = 0
+): Result => {
   for (const promiseCache of promiseCaches) {
     if (deepEqual(inputs, promiseCache.inputs)) {
       // If an error occurred,
@@ -40,6 +44,7 @@ const usePromise = <Result extends any, Args extends any[]>(promise: (...inputs:
           if (lifespan > 0) {
             setTimeout(() => {
               const index = promiseCaches.indexOf(promiseCache);
+
               if (index !== -1) {
                 promiseCaches.splice(index, 1);
               }
@@ -48,6 +53,7 @@ const usePromise = <Result extends any, Args extends any[]>(promise: (...inputs:
         }),
     inputs,
   };
+
   promiseCaches.push(promiseCache);
   throw promiseCache.promise;
 };
