@@ -2,7 +2,7 @@ import deepEqual from 'fast-deep-equal';
 
 type PromiseCache = {
   promise?: Promise<void>;
-  inputs: Array<any>;
+  inputs?: Array<any>;
   error?: unknown;
   response?: any;
   resolved: boolean;
@@ -13,7 +13,7 @@ const promiseCaches: PromiseCache[] = [];
 
 const usePromise = <Result extends any, Args extends any[]>(
   promise: (...inputs: Args) => Promise<Result>,
-  inputs: Args,
+  inputs?: Args,
   lifespan: number = 0
 ): Result => {
   for (const promiseCache of promiseCaches) {
@@ -33,29 +33,27 @@ const usePromise = <Result extends any, Args extends any[]>(
   const promiseCache: PromiseCache = {
     resolved: false,
     rejected: false,
-    promise:
-      // Make the promise request.
-      promise(...inputs)
-        .then((response: any) => {
-          promiseCache.response = response;
-          promiseCache.resolved = true;
-        })
-        .catch((error: unknown) => {
-          promiseCache.error = error;
-          promiseCache.rejected = true;
-        })
-        .then(() => {
-          if (lifespan > 0) {
-            setTimeout(() => {
-              const index = promiseCaches.indexOf(promiseCache);
-
-              if (index !== -1) {
-                promiseCaches.splice(index, 1);
-              }
-            }, lifespan);
-          }
-        }),
     inputs,
+    promise: promise(...(inputs || ([] as unknown as Args)))
+      .then((response: any) => {
+        promiseCache.response = response;
+        promiseCache.resolved = true;
+      })
+      .catch((error: unknown) => {
+        promiseCache.error = error;
+        promiseCache.rejected = true;
+      })
+      .then(() => {
+        if (lifespan > 0) {
+          setTimeout(() => {
+            const index = promiseCaches.indexOf(promiseCache);
+
+            if (index !== -1) {
+              promiseCaches.splice(index, 1);
+            }
+          }, lifespan);
+        }
+      }),
   };
 
   promiseCaches.push(promiseCache);
