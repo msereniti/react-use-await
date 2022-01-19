@@ -14,7 +14,7 @@ const promiseCaches: PromiseCache[] = [];
 const usePromise = <Result extends any, Args extends any[], Error = unknown>(
   promise: (...inputs: Args) => Promise<Result>,
   inputs?: Args,
-  lifespan: number = 0
+  lifespan: number = Infinity
 ): Result => {
   for (const promiseCache of promiseCaches) {
     if (deepEqual(inputs, promiseCache.inputs)) {
@@ -46,7 +46,7 @@ const usePromise = <Result extends any, Args extends any[], Error = unknown>(
         promiseCache.rejected = true;
       })
       .then(() => {
-        if (lifespan > 0) {
+        if (lifespan > 0 && Number.isFinite(lifespan)) {
           setTimeout(() => {
             const index = promiseCaches.indexOf(promiseCache);
 
