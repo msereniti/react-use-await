@@ -2,7 +2,7 @@
   "name": "react-promise-suspense",
   "version": "0.3.3",
   "description": "React hook for resolving promises with Suspense support",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vigzmv/react-promise-suspense.git"
@@ -24,10 +24,10 @@
   },
   "homepage": "https://github.com/phytonmk/react-promise-suspense#readme",
   "scripts": {
-    "build": "tsc --outDir build",
+    "build": "tsc --outDir dist",
     "lint": "eslint ./lib/**/*.ts",
-    "dev": "tsc --outDir build --watch",
-    "prepublishOnly": "npm run build",
+    "dev": "tsc --outDir dist --watch",
+    "prepack": "yarn build",
     "test": "uvu -r tsm ./tests",
     "test.watch": "yarn test; watchlist ./lib ./tests -- yarn test"
   },

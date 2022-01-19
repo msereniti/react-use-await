@@ -1,11 +1,11 @@
-const deepEqual = require('fast-deep-equal');
+import deepEqual from 'fast-deep-equal';
 
-interface PromiseCache {
+type PromiseCache = {
   promise?: Promise<void>;
   inputs: Array<any>;
   error?: any;
   response?: any;
-}
+};
 
 const promiseCaches: PromiseCache[] = [];
 
@@ -58,4 +58,4 @@ const usePromise = <Result extends any, Args extends any[]>(
   throw promiseCache.promise;
 };
 
-export = usePromise;
+export default usePromise;

@@ -16,7 +16,8 @@
     "strict": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
-    "target": "es5"
+    "target": "es5",
+    "esModuleInterop": true
   },
   "files": [ "lib/index.ts" ]
 }
