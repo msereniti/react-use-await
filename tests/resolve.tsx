@@ -2,7 +2,7 @@ import React from 'react';
 import { test } from 'uvu';
 import assert from 'uvu/assert';
 
-import usePromise from '../src';
+import useAwait from '../src';
 import { mountApp, setup } from './setup';
 
 test.before(setup);
@@ -18,7 +18,7 @@ test('resolve data', async () => {
       triggerResolve = resolve;
     });
   const Component: React.FC = () => {
-    const data = usePromise(loadData, ['resolve']);
+    const data = useAwait(loadData, ['resolve']);
 
     return <div>{data}</div>;
   };

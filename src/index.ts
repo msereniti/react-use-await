@@ -23,16 +23,12 @@ type CacheOptions = {
 type CacheLegacyOptions = number;
 type CacheOptionsArg = CacheOptions | CacheLegacyOptions;
 
-type UsePromiseHook = <
-  Result extends any,
-  Args extends any[],
-  _Error = unknown
->(
+type UseAwaitHook = <Result extends any, Args extends any[], _Error = unknown>(
   promise: (...getPromiseArgs: Args) => Promise<Result>,
   getPromiseArgs?: Args,
   cacheOptions?: CacheOptionsArg
 ) => Result;
-type UsePromise = UsePromiseHook & {
+type UseAwait = UseAwaitHook & {
   maxCachedPromisesCount: number;
 };
 
@@ -45,7 +41,7 @@ const defaultMaxCachedPromisesCount = 1000;
 
 const promisesCaches = new Map<() => Promise<any>, PromiseCache[]>();
 
-const usePromiseHook: UsePromiseHook = <
+const useAwaitHook: UseAwaitHook = <
   Result extends any,
   Args extends any[],
   Error = unknown
@@ -62,9 +58,8 @@ const usePromiseHook: UsePromiseHook = <
   if (!promisesCaches.has(getPromise)) {
     promisesCaches.set(getPromise, []);
   }
-  if (promisesCaches.size > usePromise.maxCachedPromisesCount) {
-    const cacheOverflow =
-      promisesCaches.size - usePromise.maxCachedPromisesCount;
+  if (promisesCaches.size > useAwait.maxCachedPromisesCount) {
+    const cacheOverflow = promisesCaches.size - useAwait.maxCachedPromisesCount;
     const toDelete = [...promisesCaches.keys()].slice(0, cacheOverflow);
 
     while (toDelete.length > 0) {
@@ -135,7 +130,7 @@ const usePromiseHook: UsePromiseHook = <
  * is not resolved or rejected.
  *
  * @param getPromise – function that returns promise (like a `fetch`).
- * Note: `usePromise` will call it using `getPromiseArgs` parameter, don't call it by yourself!
+ * Note: `useAwait` will call it using `getPromiseArgs` parameter, don't call it by yourself!
  *
  * @param getPromiseArgs – arguments, that will be spread into `getPromise` call.
  * Don't pass it or pass empty array/`undefined` to call `getPromise` without arguments.
@@ -145,8 +140,8 @@ const usePromiseHook: UsePromiseHook = <
  *
  * @returns result of fulfilled promise from `getPromise` call.
  */
-const usePromise = usePromiseHook as UsePromise;
+const useAwait = useAwaitHook as UseAwait;
 
-usePromise.maxCachedPromisesCount = defaultMaxCachedPromisesCount;
+useAwait.maxCachedPromisesCount = defaultMaxCachedPromisesCount;
 
-export = usePromise;
+export = useAwait;

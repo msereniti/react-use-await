@@ -2,7 +2,7 @@ import React from 'react';
 import { test } from 'uvu';
 import assert from 'uvu/assert';
 
-import usePromise from '../src';
+import useAwait from '../src';
 import { mountApp, setup } from './setup';
 
 test.before(setup);
@@ -15,12 +15,12 @@ test('same inputs compare', async () => {
       resolve('data');
     });
   const ComponentA: React.FC = () => {
-    const data = usePromise(loadData, [{ someDeepKey: 'x' }]);
+    const data = useAwait(loadData, [{ someDeepKey: 'x' }]);
 
     return <div>{data}</div>;
   };
   const ComponentB: React.FC = () => {
-    const data = usePromise(loadData, [{ someDeepKey: 'x' }]);
+    const data = useAwait(loadData, [{ someDeepKey: 'x' }]);
 
     return <div>{data}</div>;
   };
@@ -46,12 +46,12 @@ test('different inputs compare', async () => {
       resolve('data');
     });
   const ComponentA: React.FC = () => {
-    const data = usePromise(loadData, [{ someDeepKey: 'z' }]);
+    const data = useAwait(loadData, [{ someDeepKey: 'z' }]);
 
     return <div>{data}</div>;
   };
   const ComponentB: React.FC = () => {
-    const data = usePromise(loadData, [{ someDeepKey: 'y' }]);
+    const data = useAwait(loadData, [{ someDeepKey: 'y' }]);
 
     return <div>{data}</div>;
   };

@@ -1,11 +1,11 @@
 {
-  "name": "@phytonmk/react-promise-suspense",
-  "version": "0.0.2",
+  "name": "react-use-await",
+  "version": "0.0.1",
   "description": "React hook for resolving promises with Suspense support",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vigzmv/react-promise-suspense.git"
+    "url": "git+https://github.com/phytonmk/react-use-await.git"
   },
   "keywords": [
     "react",
@@ -21,9 +21,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/phytonmk/react-promise-suspense/issues"
+    "url": "https://github.com/phytonmk/react-use-await/issues"
   },
-  "homepage": "https://github.com/phytonmk/react-promise-suspense#readme",
+  "homepage": "https://github.com/phytonmk/react-use-await#readme",
   "scripts": {
     "build": "tsc --outDir dist",
     "lint": "eslint ./src/**/*.ts",

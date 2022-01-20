@@ -3,7 +3,7 @@ import { useErrorBoundary } from 'use-error-boundary';
 import { test } from 'uvu';
 import assert from 'uvu/assert';
 
-import usePromise from '../src';
+import useAwait from '../src';
 import { mountApp, setup } from './setup';
 
 test.before(setup);
@@ -29,7 +29,7 @@ test('throw error', async () => {
     return <ErrorBoundary>{children}</ErrorBoundary>;
   };
   const Component: React.FC = () => {
-    const data = usePromise(loadData, ['throw']);
+    const data = useAwait(loadData, ['throw']);
 
     return <div>{data}</div>;
   };

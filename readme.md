@@ -1,26 +1,23 @@
-## Fork note
 
-This is is fork of [react-promise-suspense package](https://www.npmjs.com/package/react-promise-suspense) with bug fixes, tests and minor but valuable features. It's going to replace original package as soon as possible.
-
-# usePromise
+# useAwait
 
 React hook for resolving promises with Suspense support.
 
-Fork of [vigzmv's react-promise-suspense](https://github.com/vigzmv/react-promise-suspense) that is not longer under development.
+Fork of [vigzmv's react-promise-suspense](https://github.com/vigzmv/react-promise-suspense) that has lot of wired bugs and is not longer under active development.
 
-Inspired by [fetch-suspense](https://github.com/CharlesStover/fetch-suspense), but this one is not limited to fetch, `usePromise` works with any Promise.
+Inspired by [fetch-suspense](https://github.com/CharlesStover/fetch-suspense), but this one is not limited to fetch, `useAwait` works with any Promise.
 
-[![version](https://img.shields.io/npm/v/react-promise-suspense.svg)](https://www.npmjs.com/package/react-promise-suspense)
-[![minified size](https://img.shields.io/bundlephobia/min/react-promise-suspense.svg)](https://www.npmjs.com/package/react-promise-suspense)
-[![minzipped size](https://img.shields.io/bundlephobia/minzip/react-promise-suspense.svg)](https://www.npmjs.com/package/react-promise-suspense)
-[![downloads](https://img.shields.io/npm/dt/react-promise-suspense.svg)](https://www.npmjs.com/package/react-promise-suspense)
+[![version](https://img.shields.io/npm/v/use-await.svg)](https://www.npmjs.com/package/use-await)
+[![minified size](https://img.shields.io/bundlephobia/min/use-await.svg)](https://www.npmjs.com/package/use-await)
+[![minzipped size](https://img.shields.io/bundlephobia/minzip/use-await.svg)](https://www.npmjs.com/package/use-await)
+[![downloads](https://img.shields.io/npm/dt/use-await.svg)](https://www.npmjs.com/package/use-await)
 
 ## Install
 
 ```yarn
-yarn add @phytonmk/react-promise-suspense
+yarn add use-await
 # or using npm
-npm install @phytonmk/react-promise-suspense --save
+npm install use-await --save
 ```
 
 ## Example
@@ -28,7 +25,7 @@ npm install @phytonmk/react-promise-suspense --save
 Awaiting a fetch promise:
 
 ```jsx
-import usePromise from 'react-promise-suspense';
+import useAwait from 'use-await';
 
 const fetchJson = async (url, params) => {
   const response = await fetch(input);
@@ -37,7 +34,7 @@ const fetchJson = async (url, params) => {
 };
 
 const MyFetchingComponent = () => {
-  const data = usePromise(fetchJson, [
+  const data = useAwait(fetchJson, [
     'https://pokeapi.co/api/v2/pokemon/ditto/',
     { method: 'GET' },
   ]);
@@ -57,11 +54,11 @@ const App = () => {
 
 ## Migration from `react-promise-suspense`
 
-In most cases you don't need to do anything to migrate from `react-promise-suspense` to `@phytonmk/react-promise-suspense` (expect, surely imported package name replacement).
+In most cases you don't need to do anything to migrate from `react-promise-suspense` to `use-await` (expect, surely imported package name replacement).
 
-The only thing that changed in api without backward capability is that first argument of `usePromise` must persist between renders.
+The only thing that changed in api without backward capability is that first argument of `useAwait` must persist between renders.
 
-If first argument of `usePromise` is different (by reference) each of them will be called in infinite loop.
+If first argument of `useAwait` is different (by reference) each of them will be called in infinite loop.
 
 Migrations examples:
 
@@ -69,7 +66,7 @@ Migrations examples:
 const MyFetchingComponent = () => {
 -  const fetchData = () => {...};
 +  const fetchData = React.useCallback(() => {...}, []);
-  const date = usePromise(fetchData, )
+  const date = useAwait(fetchData, )
 }
 ```
 
@@ -77,6 +74,6 @@ const MyFetchingComponent = () => {
 +  const fetchData = () => {...};
 const MyFetchingComponent = () => {
 -  const fetchData = () => {...};
-  const date = usePromise(fetchData, )
+  const date = useAwait(fetchData, )
 }
 ```

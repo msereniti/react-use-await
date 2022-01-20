@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { test } from 'uvu';
 import assert from 'uvu/assert';
 
-import usePromise from '../src';
+import useAwait from '../src';
 import { mountApp, setup } from './setup';
 
 test.before(setup);
@@ -20,7 +20,7 @@ test('uses custom isEqual', async () => {
       resolve('data');
     });
   const Component: React.FC = () => {
-    const data = usePromise(loadData, [Math.random()], { isEqual: () => true });
+    const data = useAwait(loadData, [Math.random()], { isEqual: () => true });
     const [, setCounter] = useState(0);
 
     triggerComponentRerender = () => setCounter((x) => x + 1);

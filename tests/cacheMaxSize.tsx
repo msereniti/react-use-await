@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { test } from 'uvu';
 import assert from 'uvu/assert';
 
-import usePromise from '../src';
+import useAwait from '../src';
 import { mountApp, setup } from './setup';
 
 test.before(setup);
@@ -21,7 +21,7 @@ test("shift cache if it's over the maxSize", async () => {
     });
   const Component: React.FC = () => {
     const [counter, setCounter] = useState(0);
-    const data = usePromise(loadData, [counter], { maxSize: 3 });
+    const data = useAwait(loadData, [counter], { maxSize: 3 });
 
     triggerNewRequest = () => setCounter((x) => x + 1);
 
