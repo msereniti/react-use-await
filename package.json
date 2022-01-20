@@ -1,6 +1,6 @@
 {
   "name": "react-use-await",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React hook for resolving promises with Suspense support",
   "main": "dist/index.js",
   "repository": {
@@ -58,6 +58,6 @@
     "dequal": "^2.0.2"
   },
   "peerDependencies": {
-    "react": "^16.6.0"
+    "react": ">=16.6.0"
   }
 }
