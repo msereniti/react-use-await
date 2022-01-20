@@ -34,6 +34,8 @@ const fetchJson = async (url, params) => {
 };
 
 const MyFetchingComponent = () => {
+  // note: async function must be defined outside of component
+  // you also can't use useCallback (reason https://github.com/facebook/react/issues/14563#issuecomment-453184356)
   const data = useAwait(fetchJson, [
     'https://pokeapi.co/api/v2/pokemon/ditto/',
     { method: 'GET' },
@@ -63,9 +65,9 @@ If first argument of `useAwait` is different (by reference) each of them will be
 Migrations examples:
 
 ```diff
++  const fetchData = () => {...};
 const MyFetchingComponent = () => {
--  const fetchData = () => {...};
-+  const fetchData = React.useCallback(() => {...}, []);
+-  const fetchData = React.useCallback(() => {...}, []);
   const date = useAwait(fetchData, )
 }
 ```
