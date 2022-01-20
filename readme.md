@@ -7,17 +7,17 @@ Fork of [vigzmv's react-promise-suspense](https://github.com/vigzmv/react-promis
 
 Inspired by [fetch-suspense](https://github.com/CharlesStover/fetch-suspense), but this one is not limited to fetch, `useAwait` works with any Promise.
 
-[![version](https://img.shields.io/npm/v/use-await.svg)](https://www.npmjs.com/package/use-await)
-[![minified size](https://img.shields.io/bundlephobia/min/use-await.svg)](https://www.npmjs.com/package/use-await)
-[![minzipped size](https://img.shields.io/bundlephobia/minzip/use-await.svg)](https://www.npmjs.com/package/use-await)
-[![downloads](https://img.shields.io/npm/dt/use-await.svg)](https://www.npmjs.com/package/use-await)
+[![version](https://img.shields.io/npm/v/react-use-await.svg)](https://www.npmjs.com/package/react-use-await)
+[![minified size](https://img.shields.io/bundlephobia/min/react-use-await.svg)](https://www.npmjs.com/package/react-use-await)
+[![minzipped size](https://img.shields.io/bundlephobia/minzip/react-use-await.svg)](https://www.npmjs.com/package/react-use-await)
+[![downloads](https://img.shields.io/npm/dt/react-use-await.svg)](https://www.npmjs.com/package/react-use-await)
 
 ## Install
 
 ```yarn
-yarn add use-await
+yarn add react-use-await
 # or using npm
-npm install use-await --save
+npm install react-use-await --save
 ```
 
 ## Example
@@ -25,7 +25,7 @@ npm install use-await --save
 Awaiting a fetch promise:
 
 ```jsx
-import useAwait from 'use-await';
+import useAwait from 'react-use-await';
 
 const fetchJson = async (url, params) => {
   const response = await fetch(input);
@@ -54,7 +54,7 @@ const App = () => {
 
 ## Migration from `react-promise-suspense`
 
-In most cases you don't need to do anything to migrate from `react-promise-suspense` to `use-await` (expect, surely imported package name replacement).
+In most cases you don't need to do anything to migrate from `react-promise-suspense` to `react-use-await` (expect, surely imported package name replacement).
 
 The only thing that changed in api without backward capability is that first argument of `useAwait` must persist between renders.
 
