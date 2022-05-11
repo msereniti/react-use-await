@@ -22,11 +22,11 @@
   "homepage": "https://github.com/phytonmk/react-use-await#readme",
   "scripts": {
     "build": "tsc --outDir dist && esbuild --minify --sourcemap src/useAwait.tsx --outfile=dist/index.js --target=esnext",
-    "lint": "eslint ./src/**/*.ts",
+    "lint": "eslint ./src/**/*.tsx",
     "dev": "esbuild --serve --bundle --sourcemap example/app.tsx --outdir=example --servedir=example --target=esnext",
-    "prepack": "yarn lint && yarn test && yarn build",
+    "prepack": "pnpm lint && pnpm test && pnpm build",
     "test": "uvu -r tsm ./tests",
-    "test.watch": "yarn test; watchlist ./src ./tests -- yarn test"
+    "test.watch": "pnpm test; watchlist ./src ./tests -- pnpm test"
   },
   "devDependencies": {
     "@types/node": "17.0.10",
@@ -44,6 +44,7 @@
     "husky": "7.0.4",
     "jsdom": "19.0.0",
     "nanospy": "0.5.0",
+    "pnpm": "^7.0.1",
     "prettier": "2.5.1",
     "react": "18.1.0",
     "react-dom": "18.1.0",

@@ -15,7 +15,8 @@ specifiers:
   esm: 3.2.25
   husky: 7.0.4
   jsdom: 19.0.0
-  nanospy: ^0.5.0
+  nanospy: 0.5.0
+  pnpm: ^7.0.1
   prettier: 2.5.1
   react: 18.1.0
   react-dom: 18.1.0
@@ -41,6 +42,7 @@ devDependencies:
   husky: 7.0.4
   jsdom: 19.0.0
   nanospy: 0.5.0
+  pnpm: 7.0.1
   prettier: 2.5.1
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
@@ -1681,6 +1683,12 @@ packages:
   /picomatch/2.3.1:
     resolution: {integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==}
     engines: {node: '>=8.6'}
+    dev: true
+
+  /pnpm/7.0.1:
+    resolution: {integrity: sha512-jDXatNQpx+KYoCg0sSEBj4ryS8dIfo05TkhH5GOyi0ClhmkdmdHr2PgbReQyzZzuQpKWefCAvwOB8PxE1tgQNg==}
+    engines: {node: '>=14.19'}
+    hasBin: true
     dev: true
 
   /prelude-ls/1.1.2:
