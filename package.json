@@ -1,0 +1,59 @@
+{
+  "name": "react-use-await",
+  "version": "1.0.0",
+  "description": "React hook for handy async ui",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phytonmk/react-use-await.git"
+  },
+  "keywords": [
+    "react",
+    "fetch",
+    "suspense",
+    "promise",
+    "hooks"
+  ],
+  "author": "Mikhail Sereniti <phytonmk@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/phytonmk/react-use-await/issues"
+  },
+  "homepage": "https://github.com/phytonmk/react-use-await#readme",
+  "scripts": {
+    "build": "tsc --outDir dist && esbuild --minify --sourcemap src/useAwait.tsx --outfile=dist/index.js --target=esnext",
+    "lint": "eslint ./src/**/*.ts",
+    "dev": "esbuild --serve --bundle --sourcemap example/app.tsx --outdir=example --servedir=example --target=esnext",
+    "prepack": "yarn lint && yarn test && yarn build",
+    "test": "uvu -r tsm ./tests",
+    "test.watch": "yarn test; watchlist ./src ./tests -- yarn test"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.10",
+    "@types/react": "18.0.8",
+    "@types/react-dom": "18.0.3",
+    "@typescript-eslint/parser": "5.10.0",
+    "esbuild": "0.14.38",
+    "eslint": "8.7.0",
+    "eslint-config-prettier": "8.3.0",
+    "eslint-plugin-import": "2.25.4",
+    "eslint-plugin-no-cyrillic-string": "1.0.5",
+    "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-simple-import-sort": "7.0.0",
+    "esm": "3.2.25",
+    "husky": "7.0.4",
+    "jsdom": "19.0.0",
+    "nanospy": "0.5.0",
+    "prettier": "2.5.1",
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "tsm": "2.2.1",
+    "typescript": "4.5.4",
+    "use-error-boundary": "2.0.6",
+    "uvu": "0.5.3",
+    "watchlist": "0.3.1"
+  },
+  "peerDependencies": {
+    "react": ">=16.6.0"
+  }
+}

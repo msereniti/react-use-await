@@ -1,0 +1,11 @@
+/node_modules
+/.github
+/.husky
+/.gitignore
+/.npmignore
+/.eslintrc.json
+/.prettierrc
+/tsconfig.json
+/src
+/tests
+/example
