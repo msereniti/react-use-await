@@ -12,7 +12,7 @@ test.after.each(() => {
   restoreAll();
 });
 
-test('nested data resolving', async () => {
+test('nested ordered resolving', async () => {
   const loadData = spy((id: string) => new Promise<string>((resolve) => setTimeout(() => resolve(id), 10)));
 
   const Component: React.FC<{ id: string }> = ({ id }) => {

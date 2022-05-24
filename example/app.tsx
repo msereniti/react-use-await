@@ -14,6 +14,8 @@ const fakeApi = async (id: number) => {
     throw new Error(`Oh no. Cat with id ${id} not found in out little database!`);
   }
 
+  console.log(`Loaded the name of #${id} cat (${catName})`);
+
   return catName;
 };
 
@@ -45,8 +47,11 @@ const LoadError: React.FC<{ error: Error }> = ({ error }) => {
 const loadingPlaceholder = <div className="cat-card loading">Loading...</div>;
 
 const App: React.FC = () => {
+  const [id, setId] = React.useState(3);
+
   return (
     <>
+      <button onClick={() => setId((prev) => prev + 1)}>+</button>
       <AwaitBoundary ErrorView={LoadError} loading={loadingPlaceholder}>
         <CatCard id={0} />
       </AwaitBoundary>
@@ -57,8 +62,10 @@ const App: React.FC = () => {
         <CatCard id={2} />
       </AwaitBoundary>
       <AwaitBoundary ErrorView={LoadError} loading={loadingPlaceholder}>
-        <CatCard id={3} />
-        <CatCard id={4} />
+        <CatCard id={id} />
+        <div>
+          <CatCard id={4} />
+        </div>
         <CatCard id={5} />
       </AwaitBoundary>
     </>

@@ -76,7 +76,7 @@
         "max": 1
       }
     ],
-    "newline-after-var": "warn",
+    "newline-after-var": "off",
     "newline-before-return": "warn",
     "no-array-constructor": "error",
     "no-bitwise": "error",

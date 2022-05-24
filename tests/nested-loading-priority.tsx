@@ -7,33 +7,32 @@ import { mountApp, setup } from './setup';
 
 test.before(setup);
 
-test('request isolation', async () => {
-  const loadData = (_id: string) => new Promise<number>((resolve) => resolve(Math.random()));
+test('nested loading priority', async () => {
+  const loadData = (id: string) => new Promise<string>((resolve) => setTimeout(() => resolve(id), 10));
 
   const Component: React.FC<{ id: string }> = ({ id }) => {
     const data = useAwait(loadData, id);
 
     return <div>{data}</div>;
   };
+
   const app = (
     <div>
       <AwaitBoundary loading="loading">
-        <Component id={'A'} />
-        sep
-        <Component id={'A'} />
+        %Before%
+        <AwaitBoundary loading="loading">
+          <Component id={'data'} />
+        </AwaitBoundary>
+        %After%
       </AwaitBoundary>
     </div>
   );
 
   const { mountedApp } = mountApp(app);
 
-  await new Promise((resolve) => setTimeout(resolve, 10));
+  await new Promise((resolve) => setTimeout(resolve, 5));
 
-  const [dataA, dataB] = mountedApp.textContent.split('sep');
-
-  assert.is(dataA.startsWith('0.'), true);
-  assert.is(dataB.startsWith('0.'), true);
-  assert.not.equal(dataA, dataB);
+  assert.is(mountedApp.textContent, '%Before%loading%After%');
 });
 
 test.run();
