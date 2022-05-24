@@ -1,11 +1,23 @@
 {
   "name": "react-use-await",
-  "version": "1.1.0-beta.0",
+  "version": "1.1.0-beta.3",
   "description": "React hook for handy async ui",
-  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/phytonmk/react-use-await.git"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "LICENSE",
+    "package.json",
+    "readme.md",
+    "dist/*"
+  ],
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs"
+    }
   },
   "keywords": [
     "react",
@@ -21,7 +33,7 @@
   },
   "homepage": "https://github.com/phytonmk/react-use-await#readme",
   "scripts": {
-    "build": "tsc --outDir dist && esbuild --minify --sourcemap src/useAwait.tsx --outfile=dist/index.js --target=esnext",
+    "build": "./build.sh",
     "lint": "eslint ./src/**/*.tsx",
     "dev": "esbuild --serve --bundle --sourcemap example/app.tsx --outdir=example --servedir=example --target=esnext",
     "prepack": "pnpm lint && pnpm test && pnpm build",
