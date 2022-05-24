@@ -3,7 +3,7 @@
     "declaration": true,
     "downlevelIteration": true,
     "lib": [ "dom", "ESNext" ],
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "Node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
