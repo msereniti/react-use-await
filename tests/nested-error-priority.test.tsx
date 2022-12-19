@@ -1,11 +1,10 @@
 import React from 'react';
-import { test } from 'uvu';
-import assert from 'uvu/assert';
+import { beforeAll, expect, test } from 'vitest';
 
 import { AwaitBoundary, useAwait } from '../src/useAwait';
 import { mountApp, setup } from './setup';
 
-test.before(setup);
+beforeAll(setup);
 
 test('nested error priority', async () => {
   const loadData = (id: string) => new Promise<string>((_, reject) => setTimeout(() => reject(new Error('Failed to load data')), 10));
@@ -34,7 +33,5 @@ test('nested error priority', async () => {
 
   await new Promise((resolve) => setTimeout(resolve, 50));
 
-  assert.is(mountedApp.textContent, '%Before%Failed to load data%After%');
+  expect(mountedApp.textContent).toBe('%Before%Failed to load data%After%');
 });
-
-test.run();

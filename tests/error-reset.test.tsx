@@ -1,11 +1,10 @@
 import React from 'react';
-import { test } from 'uvu';
-import assert from 'uvu/assert';
+import { beforeAll, expect, test } from 'vitest';
 
 import { AwaitBoundary, useAwait, useAwaitErrorReset } from '../src/useAwait';
 import { mountApp, setup } from './setup';
 
-test.before(setup);
+beforeAll(setup);
 
 test('error reset', async () => {
   let triggerResolve: (data: string) => void = () => {
@@ -31,7 +30,7 @@ test('error reset', async () => {
   const ErrorView: React.FC<{ error: Error }> = ({ error }) => {
     triggerReset = useAwaitErrorReset();
 
-    assert.instance(error, Error);
+    expect(error).toBeInstanceOf(Error);
 
     return <button onClick={triggerReset}>Reset error</button>;
   };
@@ -47,25 +46,29 @@ test('error reset', async () => {
 
   await new Promise((resolve) => setTimeout(resolve, 10));
 
-  assert.is(mountedApp.textContent, 'loading');
+  expect(mountedApp.textContent).toBe('loading');
+
+  await new Promise((resolve) => setTimeout(resolve, 10));
 
   triggerReject();
 
   await new Promise((resolve) => setTimeout(resolve, 10));
 
-  assert.is(mountedApp.textContent, 'Reset error');
+  expect(mountedApp.textContent).toBe('Reset error');
+
+  await new Promise((resolve) => setTimeout(resolve, 10));
 
   triggerReset();
 
   await new Promise((resolve) => setTimeout(resolve, 10));
 
-  assert.is(mountedApp.textContent, 'loading');
+  expect(mountedApp.textContent).toBe('loading');
+
+  await new Promise((resolve) => setTimeout(resolve, 10));
 
   triggerResolve('hello world');
 
   await new Promise((resolve) => setTimeout(resolve, 10));
 
-  assert.is(mountedApp.textContent, 'hello world');
+  expect(mountedApp.textContent).toBe('hello world');
 });
-
-test.run();

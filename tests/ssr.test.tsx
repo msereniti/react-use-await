@@ -1,12 +1,11 @@
 import React from 'react';
 import { renderToString } from 'react-dom/server';
-import { test } from 'uvu';
-import assert from 'uvu/assert';
+import { beforeAll, expect, test } from 'vitest';
 
 import { AwaitBoundary, SyncResolver, useAwait } from '../src/useAwait';
 import { mountApp, setup } from './setup';
 
-test.before(setup);
+beforeAll(setup);
 
 test('ssr', async () => {
   const loadDataA = (...args: any[]) =>
@@ -42,7 +41,7 @@ test('ssr', async () => {
     </div>
   );
 
-  assert.is(renderToString(serverSideApp), '<div><!--$--><div>Hello data A from server side render</div><div>Hello data B from server side render</div><!--/$--></div>');
+  expect(renderToString(serverSideApp)).toBe('<div><!--$--><div>Hello data A from server side render</div><div>Hello data B from server side render</div><!--/$--></div>');
 
   const clientSideApp = (
     <div>
@@ -57,11 +56,9 @@ test('ssr', async () => {
 
   await new Promise((resolve) => setTimeout(resolve, 3));
 
-  assert.is(mountedApp.textContent, 'loading');
+  expect(mountedApp.textContent).toBe('loading');
 
   await new Promise((resolve) => setTimeout(resolve, 30));
 
-  assert.is(mountedApp.textContent, 'Hello data A from client side render' + 'Hello data B from client side render');
+  expect(mountedApp.textContent).toBe('Hello data A from client side render' + 'Hello data B from client side render');
 });
-
-test.run();

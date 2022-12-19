@@ -1,6 +1,5 @@
 import { JSDOM } from 'jsdom';
 import React from 'react';
-import { render } from 'react-dom';
 import { createRoot } from 'react-dom/client';
 
 const { window } = new JSDOM('<main></main>');
@@ -22,7 +21,7 @@ export const mountApp = (app: React.ReactNode) => {
   const container = document.createElement('div');
   const root = createRoot(container);
 
-  parentContainer.appendChild(container);
+  parentContainer!.appendChild(container);
   root.render(app);
 
   return { mountedApp: container, unmount: () => root.unmount() };

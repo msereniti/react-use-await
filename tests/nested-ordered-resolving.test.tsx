@@ -1,14 +1,13 @@
 import { restoreAll, spy } from 'nanospy';
 import React from 'react';
-import { test } from 'uvu';
-import assert from 'uvu/assert';
+import { afterEach, beforeAll, expect, test } from 'vitest';
 
 import { AwaitBoundary, useAwait } from '../src/useAwait';
 import { mountApp, setup } from './setup';
 
-test.before(setup);
+beforeAll(setup);
 
-test.after.each(() => {
+afterEach(() => {
   restoreAll();
 });
 
@@ -37,17 +36,16 @@ test('nested ordered resolving', async () => {
 
   const { mountedApp } = mountApp(app);
 
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  expect(loadData.callCount).toBe(3);
+  expect(loadData.calls[0]).toEqual(['A']);
+  expect(loadData.calls[1]).toEqual(['B']);
+  expect(loadData.calls[2]).toEqual(['C']);
   await new Promise((resolve) => setTimeout(resolve, 50));
 
-  assert.is(loadData.callCount, 3);
-  assert.equal(loadData.calls[0], ['A']);
-  assert.equal(loadData.calls[1], ['B']);
-  assert.equal(loadData.calls[2], ['C']);
-
-  assert.is(mountedApp.textContent, '#A#B#C');
+  expect(mountedApp.textContent).toBe('#A#B#C');
 
   loadData.calls = [];
   loadData.callCount = 0;
 });
-
-test.run();

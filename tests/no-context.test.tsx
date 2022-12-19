@@ -1,14 +1,14 @@
 import React from 'react';
-import { test } from 'uvu';
-import assert from 'uvu/assert';
+import { beforeAll, expect, test } from 'vitest';
 
-import { AwaitBoundary, useAwait } from '../src/useAwait';
+import { useAwait } from '../src/useAwait';
 import { mountApp, setup } from './setup';
 
-test.before(setup);
+beforeAll(setup);
 
 test('throw without context', async () => {
-  const loadData = (...args: any[]) => new Promise<string>((resolve) => {});
+  // eslint-disable-next-line prettier/prettier
+  const loadData = (...args: any[]) => new Promise<string>((resolve) => { });
   let loadDataAttempts = 0;
 
   const Component: React.FC = () => {
@@ -16,7 +16,7 @@ test('throw without context', async () => {
       loadDataAttempts++;
       useAwait(loadData);
     } catch (err) {
-      assert.instance(err, Error);
+      expect(err).toBeInstanceOf(Error);
     }
 
     return <div>data</div>;
@@ -29,7 +29,5 @@ test('throw without context', async () => {
 
   mountApp(app);
   await new Promise((resolve) => setTimeout(resolve, 0));
-  assert.is(loadDataAttempts, 1);
+  expect(loadDataAttempts).toBe(1);
 });
-
-test.run();

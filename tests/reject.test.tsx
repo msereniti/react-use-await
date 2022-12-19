@@ -1,19 +1,18 @@
 import React from 'react';
-import { test } from 'uvu';
-import assert from 'uvu/assert';
+import { beforeAll, expect, test } from 'vitest';
 
 import { AwaitBoundary, useAwait } from '../src/useAwait';
 import { mountApp, setup } from './setup';
 
-test.before(setup);
+beforeAll(setup);
 
-test('resolve data', async () => {
-  let triggerResolve: (data: string) => void = () => {
-    throw new Error('Resolve trigger is not set up yet');
+test('reject data', async () => {
+  let triggerReject: () => void = () => {
+    throw new Error('Reject trigger is not set up yet');
   };
   const loadData = (...args: any[]) =>
-    new Promise<string>((resolve) => {
-      triggerResolve = resolve;
+    new Promise<string>((_resolve, reject) => {
+      triggerReject = reject;
     });
 
   const Component: React.FC = () => {
@@ -23,7 +22,7 @@ test('resolve data', async () => {
   };
   const app = (
     <div>
-      <AwaitBoundary loading="loading">
+      <AwaitBoundary loading="loading" ErrorView={'error'}>
         <Component />
       </AwaitBoundary>
     </div>
@@ -33,13 +32,13 @@ test('resolve data', async () => {
 
   await new Promise((resolve) => setTimeout(resolve, 10));
 
-  assert.is(mountedApp.textContent, 'loading');
-
-  triggerResolve('resolved data');
+  expect(mountedApp.textContent).toBe('loading');
 
   await new Promise((resolve) => setTimeout(resolve, 10));
 
-  assert.is(mountedApp.textContent, 'resolved data');
-});
+  triggerReject();
 
-test.run();
+  await new Promise((resolve) => setTimeout(resolve, 10));
+
+  expect(mountedApp.textContent).toBe('error');
+});
