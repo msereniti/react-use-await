@@ -30,7 +30,7 @@
   "scripts": {
     "build": "./build.sh",
     "lint": "eslint ./src/**/*.tsx",
-    "dev": "esbuild --serve --bundle --sourcemap example/app.tsx --outdir=example --servedir=example --target=esnext",
+    "dev": "cd example && vite dev",
     "prepack": "pnpm lint && pnpm test && pnpm build",
     "test": "vitest"
   },

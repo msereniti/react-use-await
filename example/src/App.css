@@ -1,0 +1,33 @@
+.cat-card {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 200px;
+  height: 300px;
+  margin: 20px;
+  border: 1px solid black;
+}
+.cat-id {
+}
+.cat-name {
+}
+.cat-pic {
+  width: 180px;
+  height: 180px;
+  border-radius: 90px;
+  object-fit: cover;
+  margin: 10px;
+}
+.cat-card.error {
+  background-color: rgb(255, 220, 220);
+}
+.error-text {
+  text-align: center;
+  margin: 10px;
+  color: red;
+}
+.load-again {
+}
+.cat-card.loading {
+}

@@ -1,7 +1,7 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
+import './App.css';
 
-import { AwaitBoundary, useAwait, useAwaitErrorReset } from '../src/useAwait';
+import React from 'react';
+import { AwaitBoundary, useAwait, useAwaitErrorReset } from 'react-use-await';
 
 const fakeApi = async (id: number) => {
   // eslint-disable-next-line no-console
@@ -11,9 +11,10 @@ const fakeApi = async (id: number) => {
   const catName = ['Luna', 'Milo', null, 'Oliver', 'Leo', 'Loki'][id];
 
   if (!catName) {
-    throw new Error(`Oh no. Cat with id ${id} not found in out little database!`);
+    throw new Error(`Oh no, cat with id ${id} not found in out little database!`);
   }
 
+  // eslint-disable-next-line no-console
   console.log(`Loaded the name of #${id} cat (${catName})`);
 
   return catName;
@@ -72,10 +73,4 @@ const App: React.FC = () => {
   );
 };
 
-const root = createRoot(document.querySelector('#root')!);
-
-root.render(
-  // <React.StrictMode>
-  <App />
-  // </React.StrictMode>
-);
+export default App;
