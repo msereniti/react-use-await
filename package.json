@@ -21,7 +21,7 @@
     "promise",
     "hooks"
   ],
-  "author": "Mikhail Sereniti <phytonmk@gmail.com>",
+  "author": "Michael Sereniti <phytonmk@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/phytonmk/react-use-await/issues"
