@@ -32,8 +32,7 @@
     "lint": "eslint ./src/**/*.tsx",
     "dev": "esbuild --serve --bundle --sourcemap example/app.tsx --outdir=example --servedir=example --target=esnext",
     "prepack": "pnpm lint && pnpm test && pnpm build",
-    "test": "vitest",
-    "test.watch": "pnpm test; watchlist ./src ./tests -- pnpm test"
+    "test": "vitest"
   },
   "devDependencies": {
     "@types/node": "17.0.10",
@@ -58,8 +57,7 @@
     "tsm": "2.2.1",
     "typescript": "4.5.4",
     "use-error-boundary": "2.0.6",
-    "vitest": "^0.26.0",
-    "watchlist": "0.3.1"
+    "vitest": "^0.26.0"
   },
   "peerDependencies": {
     "react": ">=16.6.0"

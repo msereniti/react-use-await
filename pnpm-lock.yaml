@@ -24,7 +24,6 @@ specifiers:
   typescript: 4.5.4
   use-error-boundary: 2.0.6
   vitest: ^0.26.0
-  watchlist: 0.3.1
 
 devDependencies:
   '@types/node': 17.0.10
@@ -50,7 +49,6 @@ devDependencies:
   typescript: 4.5.4
   use-error-boundary: 2.0.6_ef5jwxihqo6n7gxfmzogljlgcm
   vitest: 0.26.0_jsdom@19.0.0
-  watchlist: 0.3.1
 
 packages:
 
@@ -1810,11 +1808,6 @@ packages:
       ufo: 1.0.1
     dev: true
 
-  /mri/1.2.0:
-    resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
-    engines: {node: '>=4'}
-    dev: true
-
   /ms/2.0.0:
     resolution: {integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=}
     dev: true
@@ -2562,14 +2555,6 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       xml-name-validator: 4.0.0
-    dev: true
-
-  /watchlist/0.3.1:
-    resolution: {integrity: sha512-m5r4bzxJ9eg07TT/O0Q49imFPD45ZTuQ3kaHwSpUJj1QwVd3pzit4UYOmySdmAP5Egkz6mB6hcAPuPfhIbNo0g==}
-    engines: {node: '>=8'}
-    hasBin: true
-    dependencies:
-      mri: 1.2.0
     dev: true
 
   /webidl-conversions/7.0.0:
