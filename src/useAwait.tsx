@@ -1,23 +1,90 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-type ReactFiberNodeLinkedHook = { next: ReactFiberNodeLinkedHook | null };
+type ReactFiberNodeLinkedHook = {
+  memoizedState: string;
+  next: ReactFiberNodeLinkedHook | null;
+};
 type ReactFiberNode = unknown & {
+  child: any;
+  return: any;
   memoizedState: ReactFiberNodeLinkedHook | null;
-  elementType: unknown & {};
+  elementType: unknown & any;
   pendingProps: unknown & {};
 };
 
-const reactLowLevelAccessCurrentComponent = (): ReactFiberNode => {
-  const currentComponent = (React as any).__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED?.ReactCurrentOwner?.current;
+export type FiberSelector = (
+  /** The current {@link ReactFiberNode} node. */
+  node: ReactFiberNode
+) => boolean | void;
 
-  if (!currentComponent) {
-    throw new Error(
-      `Unable to access react low level api. Either you are trying to use react-use-await outside of fucntion component, or you are breaking Rules of Hooks, or react-use-await is not compatible with React v${React.version}`
-    );
-  }
+/**
+ * Only in debug mode it will return the current fiber.
+ */
+const reactLowLevelAccessCurrentComponent = (): ReactFiberNode | undefined => {
+  const currentComponent = (React as any).__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED?.ReactCurrentOwner?.current;
 
   return currentComponent;
 };
+
+/**
+ * Reimplementation of the traversal algorithm from its-fine.
+ * @returns Either the current fiber or undefined if it cannot be found.
+ */
+function traverseFiber(
+  /** Input {@link ReactFiberNode} to traverse. */
+  fiber: ReactFiberNode | undefined,
+  /** Whether to ascend and walk up the tree. Will walk down if `false`. */
+  ascending: boolean,
+  /** A {@link ReactFiberNode} node selector, returns the first match when `true` is passed. */
+  selector: FiberSelector
+): ReactFiberNode | undefined {
+  if (!fiber) return;
+  if (selector(fiber) === true) return fiber;
+
+  let child = ascending ? fiber.return : fiber.child;
+  while (child) {
+    const match = traverseFiber(child, ascending, selector);
+    if (match) return match;
+
+    child = ascending ? null : child.sibling;
+  }
+
+  return;
+}
+
+/**
+ * Reimplementation of its-fine useFiber. Returns the current react-internal {@link ReactFiberNode}. Ensures we have access to react internals in release mode.
+ */
+function useFiber(): ReactFiberNode {
+  const root = React.useContext(FiberContext);
+  if (!root)
+    throw new Error('Component, rendered with useAwait should be wrapped into `<AwaitBoundary>...</AwaitBoundary>`');
+
+  // In development mode, React will expose the current component's Fiber as ReactCurrentOwner.
+  // In production, we don't have this luxury and must traverse from FiberProvider via useId
+  const id = React.useId();
+  const fiber = React.useMemo(
+    () =>
+      reactLowLevelAccessCurrentComponent() ??
+      traverseFiber(root, false, (node) => {
+        let state = node.memoizedState;
+        while (state) {
+          if (state.memoizedState === id) return true;
+          state = state.next;
+        }
+        return undefined;
+      }),
+    [root, id]
+  );
+
+  if (!fiber) {
+    throw new Error(
+      `Unable to access react low level api. Either you are trying to use react-use-await outside of function component, or you are breaking Rules of Hooks, or react-use-await is not compatible with React v${React.version}`
+    );
+  }
+
+  return fiber;
+}
 
 type CallFunc = (...args: any[]) => Promise<any>;
 type ExecutionHandler = (func: CallFunc, args: any[], component: ReactFiberNode['elementType']) => void;
@@ -85,6 +152,23 @@ const useUniqueId = () => {
 
   return ref as { current: number };
 };
+
+const FiberContext = React.createContext<ReactFiberNode>(null!);
+
+/**
+ * A react-internal {@link ReactFiberNode} provider. This component binds React children to the React Fiber tree. Call its-fine hooks within this.
+ */
+export class FiberProvider extends React.Component<{ children?: React.ReactNode }> {
+  private _reactInternals!: ReactFiberNode;
+
+  render() {
+    return (
+      <FiberContext.Provider value={this._reactInternals}>
+        {this.props.children}
+      </FiberContext.Provider>
+    );
+  }
+}
 
 export const AwaitBoundary: React.FC<{
   loading: React.ReactNode;
@@ -243,9 +327,11 @@ export const AwaitBoundary: React.FC<{
   }
 
   return (
-    <Context.Provider value={ctx.current}>
-      <React.Suspense fallback={loadingView}>{children}</React.Suspense>
-    </Context.Provider>
+    <FiberProvider>
+      <Context.Provider value={ctx.current}>
+        <React.Suspense fallback={loadingView}>{children}</React.Suspense>
+      </Context.Provider>
+    </FiberProvider>
   );
 };
 
@@ -259,7 +345,7 @@ export const useAwait = <Func extends (...args: any[]) => Promise<any>, Result =
 
   if (syncResolved?.resolved) return syncResolved.result;
 
-  const currentComponent = reactLowLevelAccessCurrentComponent();
+  const currentComponent = useFiber();
   const componentRefId = currentComponent.elementType;
 
   const call = ctx.getCall(func, args, componentRefId);
